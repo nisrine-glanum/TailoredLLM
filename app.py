@@ -24,10 +24,15 @@ st.divider()
 
 add_selectbox = st.sidebar.selectbox(
     "NLP tasks :",
-    ("Home", "Summarization", "Conversational", "Text generation", "Text2Text generation", "Question answering")
+    ("Summarization", "Backlog")
 )
 
-if add_selectbox == "Home":
+other_selectbox = st.sidebar.selectbox(
+    "Custom pipeline :",
+    ("Conversational", "Text generation", "Text2Text generation", "Question answering"), disabled = True
+)
+
+if add_selectbox == "Backlog":
     st.header("Backlog of ideas to implement : ")
     st.divider()
     
@@ -50,30 +55,42 @@ if add_selectbox == "Home":
 
 summarization_models = {
     '' : '',
-    'barthez-orangesum-abstract' : 'https://api-inference.huggingface.co/models/moussaKam/barthez-orangesum-abstract',
-    'mT5_multilingual_XLSum' : 'https://api-inference.huggingface.co/models/csebuetnlp/mT5_multilingual_XLSum',
-    'camembert' : "https://api-inference.huggingface.co/models/mrm8488/camembert2camembert_shared-finetuned-french-summarization",
-    'mT5_m2m_crossSum' : "https://api-inference.huggingface.co/models/csebuetnlp/mT5_m2m_crossSum",
-    't5-base-fr-sum-cnndm' : "https://api-inference.huggingface.co/models/plguillou/t5-base-fr-sum-cnndm"
+    'Barthez-orangesum-abstract' : 'https://api-inference.huggingface.co/models/moussaKam/barthez-orangesum-abstract',
+    'MT5_multilingual_XLSum' : 'https://api-inference.huggingface.co/models/csebuetnlp/mT5_multilingual_XLSum',
+    'Camembert' : "https://api-inference.huggingface.co/models/mrm8488/camembert2camembert_shared-finetuned-french-summarization",
+    'MT5_m2m_crossSum' : "https://api-inference.huggingface.co/models/csebuetnlp/mT5_m2m_crossSum",
+    'T5-base-fr-sum-cnndm' : "https://api-inference.huggingface.co/models/plguillou/t5-base-fr-sum-cnndm",
+    'Open-assistant' : "https://api-inference.huggingface.co/models/OpenAssistant/stablelm-7b-sft-v7-epoch-3"
 }
     
 if add_selectbox == "Summarization":
-    txt = st.text_area('Text to FALC')
+    st.warning("Please be warned that some models take a while to load and some of them give inaccurate results.")
+    txt = st.text_area('Put the text to FALC here')
     
     option = st.selectbox(
-        'Choose a model to FALC your text?',
+        'Choose a model',
         (list(summarization_models.keys()))
     )
 
-    st.write('Result :')
-    
-    if (option != '') and (option in summarization_models):
-        output = query({ "inputs": txt}, str(summarization_models[option]))
-        try:
-            st.write(output[0]["summary_text"]) 
-        except KeyError:
-            st.write(output["error"])
-            st.write("Retry later !")
+    if st.button('Click here to FALC the text'):
+        if option == "Open-assistant":
+            output = query({"inputs": "<|prompter|> " + txt + ". Peux-tu faire un résumé d'un texte ?<|endoftext|><|assistant|>"}, str(summarization_models[option]))
+            try:
+                st.write("The simplified version of your text is :")
+                st.success(output[0]["summary_text"])
+                text_contents = output[0]["summary_text"]
+                st.download_button('Download', text_contents)
+            except KeyError:
+                st.error(output["error"] + ". \n\n Wait a moment for the model to load and retry later !", icon="🚨")
+        elif (option != '') and (option in summarization_models):
+            output = query({"inputs": txt}, str(summarization_models[option]))
+            try:
+                st.write("The simplified version of your text is :")
+                st.success(output[0]["summary_text"])
+                text_contents = output[0]["summary_text"]
+                st.download_button('Download', text_contents)
+            except KeyError:
+                st.error(output["error"] + ". \n\n Wait a moment for the model to load and retry later !", icon="🚨")
 
 
 conversational_models = {
@@ -94,7 +111,9 @@ if add_selectbox == "Conversational":
     if (option != '') and (option in conversational_models):
         output = query({ "inputs": txt}, str(conversational_models[option]))
         try:
-            st.write(output[0]["generated_text"]) 
+            st.write(output[0]["generated_text"])
+            text_contents = output[0]["generated_text"]
+            st.download_button('Download', text_contents)
         except KeyError:
             st.write(output["error"])
             st.write("Retry later !")
