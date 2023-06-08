@@ -63,7 +63,7 @@ lighton_model = {
 }
 
 if add_selectbox == "LightOn LLM":
-    st.warning("LightOn LLM")
+    st.warning("Testing LightOn LLM")
     txt = st.text_area('Put the text to FALC here')
 
     option = st.selectbox(
