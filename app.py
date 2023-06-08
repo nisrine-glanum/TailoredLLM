@@ -1,9 +1,6 @@
 import streamlit as st
 import os
 from paradigm_client.remote_model import RemoteModel
-from dotenv import load_dotenv
-
-load_dotenv()
 
 st.title('Tailored LLMs _by Glanum_')
 st.header('Use case : Unapei')
