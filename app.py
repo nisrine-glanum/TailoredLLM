@@ -62,7 +62,8 @@ summarization_models = {
     'Camembert': "https://api-inference.huggingface.co/models/mrm8488/camembert2camembert_shared-finetuned-french-summarization",
     'MT5_m2m_crossSum': "https://api-inference.huggingface.co/models/csebuetnlp/mT5_m2m_crossSum",
     'T5-base-fr-sum-cnndm': "https://api-inference.huggingface.co/models/plguillou/t5-base-fr-sum-cnndm",
-    'Open-assistant': "https://api-inference.huggingface.co/models/OpenAssistant/stablelm-7b-sft-v7-epoch-3"
+    'Open-assistant': "https://api-inference.huggingface.co/models/OpenAssistant/stablelm-7b-sft-v7-epoch-3",
+    'mlong-t5-large-sumstew ': "https://api-inference.huggingface.co/models/Joemgu/mlong-t5-large-sumstew"
 }
 
 if add_selectbox == "Summarization":
